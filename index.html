@@ -21,6 +21,7 @@ body {
   
   .filter-container input, .filter-container select {
         font-size: 14px; /* Smaller font size */
+        padding:2px 5px;
   }
     .table-container {
         overflow-x: auto;
@@ -43,8 +44,8 @@ body {
     }
 
     .btn-sm {
-        font-size: 10px;
-        padding: 2px 5px;
+        font-size: 12px;
+        padding: 4px 7px;
         width: auto; /* Adjust button width */
     }
     
@@ -107,7 +108,7 @@ body {
 }
 
 .table-container {
-    max-height: 80vh; /* Prevents table from being cut off */
+    max-height: 86vh; /* Prevents table from being cut off */
     overflow-y: auto;
 }
 
@@ -153,7 +154,7 @@ body {
 
 
 
-        .filter-container { display: flex; gap: 10px; margin-bottom: 10px; }
+        .filter-container { display: flex; gap: 15px; margin-bottom: 10px; }
         .filter-container input { width: 70%; }
         .filter-container select { width: 30%; }
         .btn-sm { width: 80px; }
@@ -196,7 +197,7 @@ body {
 </div>
 <div id="userManagement" style="display:none;">
     <div class="data-head d-flex justify-content-between align-items-center" style="width: 100%;">
-        <h2 class="m-0" style="flex-grow: 1; text-align: center;">Manage Users</h2>
+        <h2 class="m-0" style="padding-left:25px;flex-grow: 1; text-align: center;">Manage Users</h2>
         <button class="btn btn-danger logout-btn" onclick="logout()">Logout</button>
     </div>
 
