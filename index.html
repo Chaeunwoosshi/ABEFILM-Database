@@ -17,6 +17,31 @@ body {
     overflow: hidden; /* Prevents scrolling issues */
 }
 
+@media (max-width: 768px) {
+    .table-container {
+        overflow-x: auto;
+        max-width: 100%;
+    }
+
+    .table {
+        font-size: 12px; /* Smaller text */
+        white-space: nowrap; /* Prevents text wrapping */
+    }
+
+    .table th, 
+    .table td {
+        padding: 5px;
+    }
+
+    .btn-sm {
+        font-size: 10px;
+        padding: 2px 5px;
+        width: auto; /* Adjust button width */
+    }
+}
+
+
+
 #loginForm {
     width: 90%;
     max-width: 400px;
@@ -71,7 +96,7 @@ body {
 }
 
 .table-container {
-    max-height: 70vh; /* Prevents table from being cut off */
+    max-height: 98vh; /* Prevents table from being cut off */
     overflow-y: auto;
 }
 
