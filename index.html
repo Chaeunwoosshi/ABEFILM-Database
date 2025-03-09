@@ -2,12 +2,64 @@
 <style>
 
 
+
+body {
+    background: #121212; /* Dark background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#loginForm {
+    max-width: 400px; /* Increase width */
+    padding: 30px; /* More padding */
+    background: #1e1e1e;
+    color: white;
+    border-radius: 12px;
+    
+}
+#loginForm h2 {
+    margin-bottom: 15px;
+}
+
+#loginForm input {
+    width: 100%;
+    padding: 5px 10px;
+    background: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 5px;
+    color: white;
+}
+
+#loginForm input::placeholder {
+    color: #aaa;
+}
+
+#loginForm button {
+    width: 100%;
+    padding: 5px 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#loginForm button:hover {
+    background: #0056b3;
+}
+
+
 #userManagement{
   width:100%;
   heght:100%;
   background:#222;
   padding:10px;
 }
+
+
 
 
 .data-head {
@@ -64,7 +116,7 @@
 }
 .table {
     background-color: #222 !important; /* Dark background for entire table */
-    color: #fff !important; /* White text */
+    color: #f2f4f7 !important; /* White text */
 }
 
 .table th, 
@@ -73,19 +125,19 @@
     border-color: #555 !important; /* Dark border */
 }
 .table {
-    color: #fff !important; /* White text */
+    color: #f2f4f7 !important; /* White text */
 }
 
 .table th, 
 .table td {
-    color: #fff !important; /* Ensures all text is white */
+    color: #f2f4f7 !important; /* Ensures all text is white */
 }
 
 
 
 </style>
 
-  
+  <body>
  <div id="loginForm" class="text-center">
     <h2>Login</h2>
     <input type="email" id="email" class="form-control mb-2" placeholder="Email">
@@ -130,6 +182,7 @@
             </table>
         </div>
     </div>
+    </body>
   
 </div>
 
