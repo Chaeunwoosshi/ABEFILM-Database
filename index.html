@@ -1,0 +1,306 @@
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+
+
+#userManagement{
+  width:100%;
+  heght:100%;
+  background:#222;
+  padding:10px;
+}
+
+
+.data-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px; /* Adds spacing below */
+}
+
+ .data-head h2{
+      font-size:20px;
+      color:lightgrey;
+ }
+ 
+ /* Input Placeholder Color */
+.form-control::placeholder {
+    color: #bbb !important; /* Light gray */
+    opacity: 1; /* Ensures visibility */
+}
+
+/* Input Text Color */
+.form-control {
+    background-color: #222 !important; /* Dark background */
+    color: #fff !important; /* White text */
+    border: 1px solid #555 !important; /* Border */
+}
+
+/* Select Dropdown */
+.form-select {
+    background-color: #222 !important; /* Dark background */
+    color: #fff !important; /* White text */
+    border: 1px solid #555 !important;
+}
+
+/* Select Dropdown Options */
+.form-select option {
+    background-color: #222 !important; /* Dark background */
+    color: #fff !important; /* White text */
+}
+
+
+
+.table-container {flex-grow: 1; overflow-y: auto; }
+        .filter-container { display: flex; gap: 10px; margin-bottom: 10px; }
+        .filter-container input { width: 70%; }
+        .filter-container select { width: 30%; }
+        .btn-sm { width: 80px; }
+        .table th, .table td { white-space: nowrap; }
+
+ 
+.table-striped>tbody>tr:nth-child(odd)>td, 
+.table-striped>tbody>tr:nth-child(odd)>th {
+   background-color: #2a2a2a !important; /* Dark gray instead of red */
+}
+.table {
+    background-color: #222 !important; /* Dark background for entire table */
+    color: #fff !important; /* White text */
+}
+
+.table th, 
+.table td {
+    background-color: #222 !important; /* Ensures all rows have a dark background */
+    border-color: #555 !important; /* Dark border */
+}
+.table {
+    color: #fff !important; /* White text */
+}
+
+.table th, 
+.table td {
+    color: #fff !important; /* Ensures all text is white */
+}
+
+
+
+</style>
+
+  
+ <div id="loginForm" class="text-center">
+    <h2>Login</h2>
+    <input type="email" id="email" class="form-control mb-2" placeholder="Email">
+    <input type="password" id="password" class="form-control mb-2" placeholder="Password">
+    <button class="btn btn-primary mt-2" onclick="login()">Login</button>
+</div>
+<div id="userManagement" style="display:none;">
+    <div class="data-head d-flex justify-content-between align-items-center">
+    <h2 class="m-0">Manage Users</h2>
+    <button class="btn btn-danger logout-btn" onclick="logout()">Logout</button>
+</div>
+
+       <div class="filter-container">
+    <input type="text" id="searchUser" class="form-control" placeholder="Search by Username or Email">
+    <select id="filterStatus" class="form-select">
+        <option value="">All Status</option>
+        <option value="active">Active</option>
+        <option value="pending">Pending</option>
+        <option value="suspended">Suspended</option>
+    </select>
+    <select id="filterAccountType" class="form-select">
+        <option value="">All Types</option>
+        <option value="Premium">Premium</option>
+        <option value="Trial">Trial</option>
+    </select>
+</div>
+
+
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+  
+</div>
+
+  
+ 
+  <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getDatabase, ref, get, update, remove } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAu-u95pdOLkbTp7J5-z16caVCoSX0yIpA",
+            authDomain: "authentication-88f1c.firebaseapp.com",
+            databaseURL: "https://authentication-88f1c-default-rtdb.firebaseio.com/",
+            projectId: "authentication-88f1c",
+            storageBucket: "authentication-88f1c.appspot.com",
+            messagingSenderId: "131003320197",
+            appId: "1:131003320197:web:9fd7c9187781bda44fe6ec"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+        const adminUID = "WBmLTUMejvPMmaJRupr1UjgPmPp1";
+
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.uid === adminUID) {
+                document.getElementById("loginForm").style.display = "none";
+                document.getElementById("userManagement").style.display = "block";
+                fetchUsers();
+            } else {
+                document.getElementById("loginForm").style.display = "block";
+                document.getElementById("userManagement").style.display = "none";
+            }
+        });
+
+
+        window.login = function () {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+        alert("Please enter email and password.");
+        return;
+    }
+
+    signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            if (user.uid === adminUID) {
+                fetchUsers();
+            } else {
+                alert("You are not authorized to access this page.");
+                signOut(auth);
+            }
+        })
+        .catch(error => alert("Error: " + error.message));
+};
+
+
+        window.logout = function () {
+            signOut(auth).then(() => location.reload());
+        };
+
+        function fetchUsers() {
+            get(ref(db, "users"))
+                .then(snapshot => {
+                    if (snapshot.exists()) {
+                        displayUsers(snapshot.val());
+                    } else {
+                        document.getElementById("userTableBody").innerHTML = "<tr><td colspan='6'>No users found.</td></tr>";
+                    }
+                })
+                .catch(error => console.error("Error fetching users:", error));
+        }
+
+        function displayUsers(users) {
+    let tableHTML = "";
+    let index = 1;
+
+    Object.keys(users).forEach(uid => {
+        let user = users[uid];
+        let username = user.username || "N/A";
+        let email = user.email || "N/A";
+        let accountType = user.accountType || "N/A";
+        let status = user.status || "N/A";
+
+        tableHTML += `<tr id="row-${uid}">
+            <td>${index++}</td>
+            <td>${username}</td>
+            <td>${email}</td>
+            <td>${accountType}</td>  <!-- Removed input field for accountType -->
+            <td>
+                <span id="status-display-${uid}">${status}</span>
+                <select id="edit-status-${uid}" class="form-select d-none">
+                    <option value="active" ${status === "active" ? "selected" : ""}>Active</option>
+                    <option value="pending" ${status === "pending" ? "selected" : ""}>Pending</option>
+                    <option value="suspended" ${status === "suspended" ? "selected" : ""}>Suspended</option>
+                </select>
+            </td>
+            <td>
+                <button class='btn btn-primary btn-sm' onclick='editUser("${uid}")'>Edit</button>
+                <button class='btn btn-success btn-sm d-none' id="save-btn-${uid}" onclick='saveUser("${uid}")'>Save</button>
+                <button class='btn btn-danger btn-sm' onclick='removeUser("${uid}")'>Remove</button>
+            </td>
+        </tr>`;
+    });
+
+    document.getElementById("userTableBody").innerHTML = tableHTML;
+}
+
+
+
+      window.editUser = function (uid) {
+    document.getElementById(`status-display-${uid}`).classList.add("d-none");
+    document.getElementById(`edit-status-${uid}`).classList.remove("d-none");
+
+    document.getElementById(`save-btn-${uid}`).classList.remove("d-none");
+};
+
+
+
+        window.saveUser = function (uid) {
+    const newStatus = document.getElementById(`edit-status-${uid}`).value;
+
+    update(ref(db, `users/${uid}`), {
+        status: newStatus
+    })
+    .then(() => fetchUsers())
+    .catch(error => alert("Error updating user: " + error.message));
+};
+
+
+        window.removeUser = function (uid) {
+            if (confirm("Are you sure you want to remove this user?")) {
+                remove(ref(db, `users/${uid}`))
+                    .then(() => fetchUsers())
+                    .catch(error => alert("Error removing user: " + error.message));
+            }
+        };
+
+        document.getElementById("searchUser").addEventListener("input", function () {
+            let searchValue = this.value.toLowerCase();
+            let rows = document.querySelectorAll("#userTableBody tr");
+            rows.forEach(row => {
+                let username = row.cells[1].textContent.toLowerCase();
+                let email = row.cells[2].textContent.toLowerCase();
+                row.style.display = (username.includes(searchValue) || email.includes(searchValue)) ? "" : "none";
+            });
+        });
+
+       document.getElementById("filterStatus").addEventListener("change", filterUsers);
+document.getElementById("filterAccountType").addEventListener("change", filterUsers);
+
+function filterUsers() {
+    let selectedStatus = document.getElementById("filterStatus").value.toLowerCase();
+    let selectedAccountType = document.getElementById("filterAccountType").value.toLowerCase();
+    let rows = document.querySelectorAll("#userTableBody tr");
+
+    rows.forEach(row => {
+        let statusSpan = row.querySelector("td:nth-child(5) span");
+        let accountTypeCell = row.cells[3];
+
+        let status = statusSpan ? statusSpan.textContent.toLowerCase().trim() : "";
+        let accountType = accountTypeCell ? accountTypeCell.textContent.toLowerCase().trim() : "";
+
+        let statusMatch = (selectedStatus === "" || status === selectedStatus);
+        let accountTypeMatch = (selectedAccountType === "" || accountType === selectedAccountType);
+
+        row.style.display = (statusMatch && accountTypeMatch) ? "" : "none";
+    });
+}
+
+    </script>  
