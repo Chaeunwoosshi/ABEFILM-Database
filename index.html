@@ -18,13 +18,18 @@ body {
 }
 
 @media (max-width: 768px) {
+  
+  .filter-container input, .filter-container select {
+        font-size: 14px; /* Smaller font size */
+  }
     .table-container {
         overflow-x: auto;
         max-width: 100%;
     }
+    
 
     .table {
-        font-size: 12px; /* Smaller text */
+        font-size: 14px; /* Smaller text */
         white-space: nowrap; /* Prevents text wrapping */
     }
 
@@ -32,12 +37,18 @@ body {
     .table td {
         padding: 5px;
     }
+    .btn{
+       font-size: 12px;
+         padding: 4px 8px;
+    }
 
     .btn-sm {
         font-size: 10px;
         padding: 2px 5px;
         width: auto; /* Adjust button width */
     }
+    
+    
 }
 
 
@@ -184,10 +195,10 @@ body {
     <button class="btn btn-primary mt-2" onclick="login()">Login</button>
 </div>
 <div id="userManagement" style="display:none;">
-    <div class="data-head d-flex justify-content-between align-items-center">
-    <h2 class="m-0">Manage Users</h2>
-    <button class="btn btn-danger logout-btn" onclick="logout()">Logout</button>
-</div>
+    <div class="data-head d-flex justify-content-between align-items-center" style="width: 100%;">
+        <h2 class="m-0" style="flex-grow: 1; text-align: center;">Manage Users</h2>
+        <button class="btn btn-danger logout-btn" onclick="logout()">Logout</button>
+    </div>
 
        <div class="filter-container">
     <input type="text" id="searchUser" class="form-control" placeholder="Search by Username or Email">
