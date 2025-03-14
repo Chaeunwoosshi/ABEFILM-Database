@@ -252,20 +252,23 @@ body {
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const auth = getAuth(app);
-        const adminUID = "WBmLTUMejvPMmaJRupr1UjgPmPp1";
+const db = getDatabase(app);
+const auth = getAuth(app);
 
-        onAuthStateChanged(auth, (user) => {
-            if (user && user.uid === adminUID) {
-                document.getElementById("loginForm").style.display = "none";
-                document.getElementById("userManagement").style.display = "block";
-                fetchUsers();
-            } else {
-                document.getElementById("loginForm").style.display = "block";
-                document.getElementById("userManagement").style.display = "none";
-            }
-        });
+// Array of admin UIDs
+const adminUIDs = ["WBmLTUMejvPMmaJRupr1UjgPmPp1", "2qaXgKzR1ZcZn3wcu51DW6NDruh1"];
+
+onAuthStateChanged(auth, (user) => {
+    if (user && adminUIDs.includes(user.uid)) {  // Corrected line
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("userManagement").style.display = "block";
+        fetchUsers();
+    } else {
+        document.getElementById("loginForm").style.display = "block";
+        document.getElementById("userManagement").style.display = "none";
+    }
+});
+
 
 
         window.login = function () {
