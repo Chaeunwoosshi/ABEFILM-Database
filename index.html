@@ -290,6 +290,9 @@ onAuthStateChanged(auth, (user) => {
             signOut(auth);
         }
     })
+    .catch(error => alert("Login failed: " + error.message)); 
+}; 
+
 
 
 
