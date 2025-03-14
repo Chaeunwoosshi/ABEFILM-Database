@@ -259,7 +259,7 @@ const auth = getAuth(app);
 const adminUIDs = ["WBmLTUMejvPMmaJRupr1UjgPmPp1", "2qaXgKzR1ZcZn3wcu51DW6NDruh1"];
 
 onAuthStateChanged(auth, (user) => {
-    if (user && adminUIDs.includes(user.uid)) {  // Corrected line
+    if (user && adminUIDs.includes(user.uid)) { // ✅ Corrected check
         document.getElementById("loginForm").style.display = "none";
         document.getElementById("userManagement").style.display = "block";
         fetchUsers();
@@ -281,17 +281,16 @@ onAuthStateChanged(auth, (user) => {
     }
 
     signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            if (user.uid === adminUID) {
-                fetchUsers();
-            } else {
-                alert("You are not authorized to access this page.");
-                signOut(auth);
-            }
-        })
-        .catch(error => alert("Error: " + error.message));
-};
+    .then((userCredential) => {
+        const user = userCredential.user;
+        if (adminUIDs.includes(user.uid)) { 
+            fetchUsers();
+        } else {
+            alert("You are not authorized to access this page.");
+            signOut(auth);
+        }
+    })
+
 
 
         window.logout = function () {
